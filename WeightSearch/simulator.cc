@@ -51,7 +51,7 @@ void simulator::generateNext(double p){
       }
     }
   }
-  std::cout<< "W_t_ size generated is :" << W_t_.size()<<std::endl;
+  //std::cout<< "W_t_ size generated is :" << W_t_.size()<<std::endl;
   //std::cout<< "selected_edges size is :" << selected_edges.size()<<std::endl;
   //printlist(1);
 }

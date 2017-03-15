@@ -5,18 +5,23 @@ The toolchain has to support C++11.
 To build the executable in main.cc into test
 
 ```
-g++ main.cc llsq.cpp WeightSearch.cc simulator.cc -o test
+make
 ```
-I recommend build under C++11
+
+To build again after fixing some files, run make clean first, then run make
+```
+make clean
+make
+```
 
 ## Running the tests
-The executable takes one input file, which should be a list of edges (a pair of int).
+The executable takes one file for input network one file for output the edge that searched in the algorithm.
 ```
-./test <filename>
+./runSim <filename1> <filename2>
 ```
 The output will be a simulation result with the number of edges selected by the algorithm and running time in each round of simulation.
 
 ### example
 ```
-./test 2004-04.txt
+./runSim 2004-04.txt out.txt
 ```

@@ -55,16 +55,16 @@ void displayEdgeList(std::vector<std::pair<int, int>> v){
 
 int main(int argc,  char *argv[]){
   std::vector<std::pair<int, int>> edges;
-  auto start = std::chrono::system_clock::now();
-  if (argc > 1 ){
+  if (argc > 2 ){
     std::string filename(argv[1]);
-    std::cout<< filename << std::endl;
+    std::cout<< "Input network: "<< filename << std::endl;
     edges = readFileToEdgeList(filename);
     //displayEdgeList(edges);
   }else{
-    std::cout<< "Have to input a network file" << std::endl;
+    std::cout<< "Have to input a network file and a output file" << std::endl;
     return 1;
   }
+  std::set<std::pair<int, int>> output;
   
   simulator s;
   weightSearch w;
@@ -77,16 +77,20 @@ int main(int argc,  char *argv[]){
   std::cout<< "Got edges input :" << edges.size() << std::endl;
   w.setParam(init_value, edges);
   s.setParam(edges);
+  auto start = std::chrono::system_clock::now();
   for(int i(0); i < simulation_round; i++){
     // auto start = std::chrono::system_clock::now();
     s.generateNext(p);
     //s.printWt();
     auto r_edges = w.search(s.W_t_, jump, N_shake, L);
+    for(auto edge: r_edges){
+      output.insert(edge);
+    }
     //w.printDw();
     //displayEdgeList(r_edges);    
     //auto end = std::chrono::system_clock::now();
     //std::chrono::duration<double> time_sec = end - start;
-    std::cout<< "edges worth attention: " << r_edges.size() << std::endl;
+    //std::cout<< "edges worth attention: " << r_edges.size() << std::endl;
     //std::cout<< "duration for each round: " << time_sec.count() << std::endl;
 
   }
@@ -94,5 +98,15 @@ int main(int argc,  char *argv[]){
   std::chrono::duration<double> time_sec = end - start;
   std::cout<< "general time spend:" << time_sec.count()<< "s" << "\n"
 	   << "average time spend on each loop: " << time_sec.count()/(double) simulation_round << "s" <<std::endl;
+  
+  // Writing the output into the file
+  std::string outputfile(argv[2]);
+  std::cout<< "Output network:" << outputfile<< std::endl;
+  std::ofstream o;
+  o.open(outputfile);
+  for(std::set<std::pair<int, int>>::iterator it = output.begin(); it != output.end(); ++it){
+      o << it->first << " " << it->second << "\n";
+    }
+  o.close();
 }
 
