@@ -1,0 +1,11 @@
+2004-04.txt
+Got edges input :1672
+W_t_ size generated is :1339
+edges worth attention: 687
+W_t_ size generated is :964
+edges worth attention: 390
+W_t_ size generated is :1046
+edges worth attention: 364
+W_t_ size generated is :1008
+edges worth attention: 390
+W_t_ size generated is :1038
