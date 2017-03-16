@@ -77,12 +77,16 @@ int main(int argc,  char *argv[]){
   std::cout<< "Got edges input :" << edges.size() << std::endl;
   w.setParam(init_value, edges);
   s.setParam(edges);
-  auto start = std::chrono::system_clock::now();
+
+  std::chrono::duration<double> time_sum;
   for(int i(0); i < simulation_round; i++){
     // auto start = std::chrono::system_clock::now();
     s.generateNext(p);
     //s.printWt();
+    auto start = std::chrono::system_clock::now();
     auto r_edges = w.search(s.W_t_, jump, N_shake, L);
+    auto end = std::chrono::system_clock::now();
+    time_sum += (end - start);
     for(auto edge: r_edges){
       output.insert(edge);
     }
@@ -92,12 +96,10 @@ int main(int argc,  char *argv[]){
     //std::chrono::duration<double> time_sec = end - start;
     //std::cout<< "edges worth attention: " << r_edges.size() << std::endl;
     //std::cout<< "duration for each round: " << time_sec.count() << std::endl;
-
   }
-  auto end = std::chrono::system_clock::now();
-  std::chrono::duration<double> time_sec = end - start;
-  std::cout<< "general time spend:" << time_sec.count()<< "s" << "\n"
-	   << "average time spend on each loop: " << time_sec.count()/(double) simulation_round << "s" <<std::endl;
+
+  std::cout<< "general time spend:" << time_sum.count()<< "s" << "\n"
+	   << "average time spend on each loop: " << time_sum.count()/(double) simulation_round << "s" <<std::endl;
   
   // Writing the output into the file
   std::string outputfile(argv[2]);
