@@ -72,11 +72,12 @@ def build_dataset(words, too_low_freq):
 	reverse_dictionary = dict(zip(dictionary.values(), dictionary.keys()))
 	return data, count, dictionary, reverse_dictionary
 
-data, count, dictionary, reverse_dictionary = build_dataset(words, 10)
+data, count, dictionary, reverse_dictionary = build_dataset(words, 6)
 
 del words
 print('Most common words', count[:5])
 print('Sample data', data[:10], [reverse_dictionary[i] for i in data[:10]])
+print(len(reverse_dictionary))
 
 data_index = 0
 
@@ -114,7 +115,7 @@ for i in range(8):
 
 
 # Step 4: Build and train a skip-gram model.
-
+vocabulary_size = len(reverse_dictionary)
 batch_size = 128
 embedding_size = 128  # Dimension of the embedding vector.
 skip_window = 1       # How many words to consider left and right.
