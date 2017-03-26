@@ -8,3 +8,8 @@ example
 ```
 python main.py 2004-04.txt
 ```
+### Input
+The input of the python script should be a list of edge 2004-04.txt should be an example
+
+### Output
+The output of the python script should be an ndArray that contains the learning result of the embedding.
