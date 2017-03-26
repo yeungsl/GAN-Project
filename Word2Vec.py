@@ -38,6 +38,7 @@ def read_data(filename):
 
 words = read_data(filename)
 print('Data size', len(words))
+print(words)
 
 # build data sets for training use
 # different from the original version

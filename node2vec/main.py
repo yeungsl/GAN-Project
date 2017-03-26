@@ -49,16 +49,19 @@ print('edge list size', len(Edgelist))
 
 p = 0.5
 q = 0.5
-num_walks = 2
-walk_length = 1
+num_walks = 10
+walk_length = 80
 
 G = Node2Vec.Graph(BFSlist, Edgelist, p, q)
 G.preprocess_transition_probs()
 walks = G.simulate_walks(num_walks, walk_length)
-#print(walks)
 print('walk list size', len(walks))
+words = []
+for walk in walks:
+  words.extend([str(step) for step in walk])
+#print(words)
 
-'''
+
 def build_dataset(words, too_low_freq):
   ### count -- word frequency list
   ### diciotnary -- word to int according to frequency
@@ -89,7 +92,7 @@ def build_dataset(words, too_low_freq):
 
 data, count, dictionary, reverse_dictionary = build_dataset(words, 6)
 
-del words
+del walks
 print('Most common words', count[:5])
 print('Sample data', data[:10], [reverse_dictionary[i] for i in data[:10]])
 print(len(reverse_dictionary))
@@ -98,7 +101,7 @@ print(len(reverse_dictionary))
 data_index = 0
 
 # Step 3: Function to generate a training batch for the skip-gram model.
-def generate_batch(batch_size, num_walks, walk_length):
+def generate_batch(batch_size, num_skips, skip_window):
   global data_index
   assert batch_size % num_skips == 0
   assert num_skips <= 2 * skip_window
@@ -131,7 +134,7 @@ for i in range(8):
 
 
 # Step 4: Build and train a skip-gram model.
-vocabulary_size = len(walks)
+vocabulary_size = len(reverse_dictionary)
 batch_size = 128
 embedding_size = 128  # Dimension of the embedding vector.
 skip_window = 1       # How many words to consider left and right.
@@ -193,7 +196,7 @@ with graph.as_default():
   init = tf.global_variables_initializer()
 
 # Step 5: Begin training.
-num_steps = 100001
+num_steps = 10001
 
 with tf.Session(graph=graph) as session:
   # We must initialize all variables before we use them.
@@ -231,7 +234,8 @@ with tf.Session(graph=graph) as session:
           log_str = "%s %s," % (log_str, close_word)
         print(log_str)
   final_embeddings = normalized_embeddings.eval()
-'''
+  print ("shape of the final embedding", final_embeddings.shape)
+
 
 
 
