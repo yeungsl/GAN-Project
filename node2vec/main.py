@@ -7,6 +7,7 @@ import tensorflow as tf
 import numpy as np
 from six.moves import urllib
 import Node2Vec
+import Word2Vec
 import collections, math, os, random, httplib, sys
 
 # Read in the same data as used in tensoflow template
@@ -38,6 +39,7 @@ def read_data(filename):
         BFSlist[dst].update({src: 1})
   return BFSlist, Edgelist
 
+################# main code ###########################################
 filename = sys.argv[1]
 BFSlist, Edgelist = read_data(filename)
 #print(BFSlist)
@@ -61,7 +63,10 @@ for walk in walks:
   words.extend([str(step) for step in walk])
 #print(words)
 
+L = Word2Vec.Learn(words)
+matrix = L.train()
 
+'''
 def build_dataset(words, too_low_freq):
   ### count -- word frequency list
   ### diciotnary -- word to int according to frequency
@@ -96,6 +101,7 @@ del walks
 print('Most common words', count[:5])
 print('Sample data', data[:10], [reverse_dictionary[i] for i in data[:10]])
 print(len(reverse_dictionary))
+print(dictionary)
 
 
 data_index = 0
@@ -235,7 +241,7 @@ with tf.Session(graph=graph) as session:
         print(log_str)
   final_embeddings = normalized_embeddings.eval()
   print ("shape of the final embedding", final_embeddings.shape)
-
+'''
 
 
 
