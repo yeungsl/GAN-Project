@@ -42,16 +42,10 @@ def read_data(filename):
 start = time.time()
 filename = sys.argv[1]
 BFSlist, Edgelist = read_data(filename)
-#print(BFSlist)
-#print(Edgelist)
-#print('Adjacent list size', len(BFSlist))
+
 print('edge list size', len(Edgelist))
 T = linking_test.Test(BFSlist, Edgelist, float(sys.argv[2]))
 Removelist, New_BFSlist, New_Edgelist = T.sample()
-#print (Removelist)
-#print (New_Edgelist)
-#print (New_BFSlist.keys())
-#New_BFSlist, New_Edgelist = T.generate_list(Removelist)
 print('New edge list size', len(New_Edgelist))
 # generating all the walks that needed in learning
 
@@ -67,12 +61,12 @@ print('walk list size', len(walks))
 words = []
 for walk in walks:
   words.extend([str(step) for step in walk])
-#print(words)
+
 
 L = Word2Vec.Learn(words)
 matrix, mapping = L.train()
 
-percentage = T.run_test(Removelist, matrix, mapping)
-print("the correct rate of prediction is %f "%percentage)
+percentage = T.run_test(Removelist, matrix, mapping, BFSlist)
+print("the percetion of prediction is %f "%percentage)
 
 print("Total time comsumed %fs" %(time.time()-start))

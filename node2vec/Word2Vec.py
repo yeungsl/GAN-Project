@@ -80,14 +80,14 @@ class Learn:
     words = self.W
     data, count, dictionary, reverse_dictionary = self.build_dataset(words, 6)
     del words
-    print('Most common words', count[:5])
-    print('Sample data', data[:10], [reverse_dictionary[i] for i in data[:10]])
-    print(len(reverse_dictionary))
+    #print('Most common words', count[:5])
+    #print('Sample data', data[:10], [reverse_dictionary[i] for i in data[:10]])
+    #print(len(reverse_dictionary))
 
     batch, labels = self.generate_batch(data, batch_size=8, num_skips=2, skip_window=1)
-    for i in range(8):
-      print(batch[i], reverse_dictionary[batch[i]],
-          '->', labels[i, 0], reverse_dictionary[labels[i, 0]])
+    #for i in range(8):
+      #print(batch[i], reverse_dictionary[batch[i]],
+          #'->', labels[i, 0], reverse_dictionary[labels[i, 0]])
 
     data_index = 0
 
@@ -159,7 +159,7 @@ class Learn:
     with tf.Session(graph=graph) as session:
       # We must initialize all variables before we use them.
       init.run()
-      print("Initialized")
+      #print("Initialized")
 
       average_loss = 0
       for step in xrange(num_steps):
@@ -176,7 +176,7 @@ class Learn:
           if step > 0:
             average_loss /= 2000
           # The average loss is an estimate of the loss over the last 2000 batches.
-          print("Average loss at step ", step, ": ", average_loss)
+          #print("Average loss at step ", step, ": ", average_loss)
           average_loss = 0
 
         # Note that this is expensive (~20% slowdown if computed every 500 steps)
@@ -190,9 +190,9 @@ class Learn:
             for k in xrange(top_k):
               close_word = reverse_dictionary[nearest[k]]
               log_str = "%s %s," % (log_str, close_word)
-            print(log_str)
+            #print(log_str)
       final_embeddings = normalized_embeddings.eval()
-      print ("shape of the final embedding", final_embeddings.shape)
+      #print ("shape of the final embedding", final_embeddings.shape)
       return list(final_embeddings), dictionary
 
 

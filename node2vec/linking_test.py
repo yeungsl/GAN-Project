@@ -37,7 +37,7 @@ class Test():
     	r = np.linalg.norm(matrix[mapping[str(src)]] - matrix[mapping[str(dst)]])
     	return r
     		
-    def run_test(self, Removelist, matrix, mapping):
+    def run_test(self, Removelist, matrix, mapping, Original_list):
     	self.M = matrix
     	self.MP = mapping
 
@@ -45,7 +45,7 @@ class Test():
     	result = {}
     	s = 0
     	node_list = set([node for edge in Removelist for node in edge])
-    	print (len(node_list))
+    	#print (len(node_list))
     	#print (Removelist)
     	#print (mapping)
     	
@@ -53,32 +53,29 @@ class Test():
     		dist = self.check(edge[0], edge[1])
     		s += dist
     		result[edge] = dist
-    		#if edge in Removelist:
-    			#print(edge, dist)
+
     	normalized_result = {}
     	for e in result:
     		normalized_result[e] = result[e]/s
-    		#if e in Removelist:
-    			#print(e, normalized_result[e])
     		
-    	print ("result size", len(normalized_result))
+    	#print ("result size", len(normalized_result))
     	
     	sorted_result = collections.OrderedDict(sorted(normalized_result.items(), key=lambda t:t[1]))
     	
     	n = len(normalized_result) * p
     	correct = 0
     	count = 1
-    	print("getting the first ", n)
+    	#print("getting the first ", n)
     	
     	for edge in sorted_result:
-    		#print(edge, sorted_result[edge])
-    		if edge in Removelist:
-    			#print(edge, correct)
+
+    		if edge[1] in Original_list[edge[0]].keys() or edge[0] in Original_list[edge[0]].keys():
+
     			correct += 1
     		count += 1
     		if count > n:
     			break
-    	#print(correct/n)
+
     	return correct/n
     
     
