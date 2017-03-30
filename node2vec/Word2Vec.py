@@ -16,6 +16,7 @@ class Learn:
 # But limite the words who has relatively low frequency
   def __init__(self, words):
     self.W = words
+    self.D = 0
 
   def build_dataset(self, words, too_low_freq):
   	### count -- word frequency list
@@ -48,7 +49,7 @@ class Learn:
 
   # Step 3: Function to generate a training batch for the skip-gram model.
   def generate_batch(self, data, batch_size, num_skips, skip_window):
-    global data_index
+    data_index = self.D
     assert batch_size % num_skips == 0
     assert num_skips <= 2 * skip_window
     batch = np.ndarray(shape=(batch_size), dtype=np.int32)
@@ -71,6 +72,7 @@ class Learn:
       data_index = (data_index + 1) % len(data)
     # Backtrack a little bit to avoid skipping words in the end of a batch
     data_index = (data_index + len(data) - span) % len(data)
+    self.D = data_index
     return batch, labels
 
 
@@ -84,7 +86,7 @@ class Learn:
 
     batch, labels = self.generate_batch(data, batch_size=8, num_skips=2, skip_window=1)
     for i in range(8):
-    print(batch[i], reverse_dictionary[batch[i]],
+      print(batch[i], reverse_dictionary[batch[i]],
           '->', labels[i, 0], reverse_dictionary[labels[i, 0]])
 
     data_index = 0
@@ -161,7 +163,7 @@ class Learn:
 
       average_loss = 0
       for step in xrange(num_steps):
-        batch_inputs, batch_labels = generate_batch(
+        batch_inputs, batch_labels = self.generate_batch(data,
             batch_size, num_skips, skip_window)
         feed_dict = {train_inputs: batch_inputs, train_labels: batch_labels}
 
@@ -190,6 +192,7 @@ class Learn:
               log_str = "%s %s," % (log_str, close_word)
             print(log_str)
       final_embeddings = normalized_embeddings.eval()
-      return list(final_embeddings)
+      print ("shape of the final embedding", final_embeddings.shape)
+      return list(final_embeddings), dictionary
 
 

@@ -23,8 +23,7 @@ class Test():
     	matrix = self.M
     	r = np.linalg.norm(matrix[mapping[str(src)]] - matrix[mapping[str(dst)]])
     	return r
-    def run_test(self)
-    	Removelist = self.sample()
+    def run_test1(self, Removelist):
     	result = {}
     	s = 0
     	for edge in Removelist:
@@ -35,4 +34,27 @@ class Test():
     	for e in result:
     		normalized_result[e] = result[e]/s
     	
-    	return collections.OrderedDict(sorted(d.items(), key=lambda t:t[1]))
+    	return collections.OrderedDict(sorted(normalized_result.items(), key=lambda t:t[1]))
+    def run_test2(self, Removelist):
+        Edgelist = self.E
+        New_Edgelist = []
+        BFSlist = {}    
+        for edge in Edgelist:
+            if edge not in Removelist:
+                src = edge[0]
+                dst = edge[1]
+                New_Edgelist.append((src, dst))
+                if src not in BFSlist.keys():
+                  BFSlist[src] = {dst: 1}
+                  if dst not in BFSlist.keys():
+                    BFSlist[dst] = {src: 1}
+                  else:
+                    BFSlist[dst].update({src: 1})
+                else:
+                  BFSlist[src].update({dst: 1})
+                  if dst not in BFSlist.keys():
+                    BFSlist[dst] = {src: 1}
+                  else:
+                    BFSlist[dst].update({src: 1})
+        return BFSlist, New_Edgelist
+        
