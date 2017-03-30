@@ -65,7 +65,7 @@ class Test():
     	n = len(normalized_result) * p
     	correct = 0
     	count = 1
-    	#print("getting the first ", n)
+    	print("getting the first ", n)
     	
     	for edge in sorted_result:
 
@@ -75,8 +75,10 @@ class Test():
     		count += 1
     		if count > n:
     			break
+    	print('correct', correct)
 
-    	return correct/n
+    	AUC = (correct*0.5 + (n-correct))/n
+    	return correct/n, AUC
     
     
     

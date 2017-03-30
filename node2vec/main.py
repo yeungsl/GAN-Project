@@ -66,7 +66,7 @@ for walk in walks:
 L = Word2Vec.Learn(words)
 matrix, mapping = L.train()
 
-percentage = T.run_test(Removelist, matrix, mapping, BFSlist)
+percentage, AUC = T.run_test(Removelist, matrix, mapping, BFSlist)
 print("the percetion of prediction is %f "%percentage)
-
+print("the AUC of prediction is %f"%AUC)
 print("Total time comsumed %fs" %(time.time()-start))
