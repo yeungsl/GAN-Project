@@ -2,6 +2,8 @@
 # <yeungsl@bu.edu>
 
 import numpy as np
+import Word2Vec
+import Node2Vec
 import random, collections
 
 class Test():
@@ -35,7 +37,7 @@ class Test():
     		normalized_result[e] = result[e]/s
     	
     	return collections.OrderedDict(sorted(normalized_result.items(), key=lambda t:t[1]))
-    def run_test2(self, Removelist):
+    def run_test2(self, Removelist, p, q):
         Edgelist = self.E
         New_Edgelist = []
         BFSlist = {}    
@@ -56,5 +58,28 @@ class Test():
                     BFSlist[dst] = {src: 1}
                   else:
                     BFSlist[dst].update({src: 1})
-        return BFSlist, New_Edgelist
-        
+                    
+	    print('Adjacent list size', len(BFSlist))
+		print('edge list size', len(New_Edgelist))
+  
+	    G = Node2Vec.Graph(BFSlist, New_Edgelist, p, q)
+        G.preprocess_transition_probs()
+        walks = N_G.simulate_walks(num_walks, walk_length)
+        print('walk list size', len(walks))
+	    for walk in walks:
+	    	words.extend([str(step) for step in walk])
+		#print(words)
+
+		N_L = Word2Vec.Learn(words)
+		matrix, mapping = N_L.train()
+
+
+
+    
+    
+    
+    
+    
+    
+    
+    

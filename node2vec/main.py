@@ -78,7 +78,8 @@ for line in test1:
 
 if sys.argv[3] == '1':
   #Removelist = T.sample()
-  BFSlist, Edgelist = T.run_test2(Removelist)
+  test2 = T.run_test2(Removelist)
+  '''
   print('Adjacent list size', len(BFSlist))
   print('edge list size', len(Edgelist))
   
@@ -95,6 +96,7 @@ if sys.argv[3] == '1':
 
   N_T = linking_test.Test(BFSlist, Edgelist, matrix, mapping)
   test2 = N_T.run_test1(Removelist)
+  '''
   output.write('-------------------test2-------------------\n')
   for line in test2:
     output.write(str(line) + ' ' + str(test2[line]) + '\n')
