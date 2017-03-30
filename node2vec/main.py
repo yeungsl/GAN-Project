@@ -44,9 +44,15 @@ filename = sys.argv[1]
 BFSlist, Edgelist = read_data(filename)
 #print(BFSlist)
 #print(Edgelist)
-print('Adjacent list size', len(BFSlist))
+#print('Adjacent list size', len(BFSlist))
 print('edge list size', len(Edgelist))
-
+T = linking_test.Test(BFSlist, Edgelist, float(sys.argv[2]))
+Removelist, New_BFSlist, New_Edgelist = T.sample()
+#print (Removelist)
+#print (New_Edgelist)
+#print (New_BFSlist.keys())
+#New_BFSlist, New_Edgelist = T.generate_list(Removelist)
+print('New edge list size', len(New_Edgelist))
 # generating all the walks that needed in learning
 
 p = 0.5
@@ -54,7 +60,7 @@ q = 0.5
 num_walks = 10
 walk_length = 80
 
-G = Node2Vec.Graph(BFSlist, Edgelist, p, q)
+G = Node2Vec.Graph(New_BFSlist, New_Edgelist, p, q)
 G.preprocess_transition_probs()
 walks = G.simulate_walks(num_walks, walk_length)
 print('walk list size', len(walks))
@@ -66,39 +72,7 @@ for walk in walks:
 L = Word2Vec.Learn(words)
 matrix, mapping = L.train()
 
-T = linking_test.Test(BFSlist, Edgelist, matrix, mapping)
-Removelist = T.sample()
-test1 = T.run_test1(Removelist)
-#print(test1)
+percentage = T.run_test(Removelist, matrix, mapping)
+print("the correct rate of prediction is %f "%percentage)
 
-output = open(sys.argv[2], 'w')
-output.write('------------------test1----------------------\n')
-for line in test1:
-  output.write(str(line) + ' ' + str(test1[line]) + '\n')
-
-if sys.argv[3] == '1':
-  #Removelist = T.sample()
-  test2 = T.run_test2(Removelist)
-  '''
-  print('Adjacent list size', len(BFSlist))
-  print('edge list size', len(Edgelist))
-  
-  N_G = Node2Vec.Graph(BFSlist, Edgelist, p, q)
-  N_G.preprocess_transition_probs()
-  walks = N_G.simulate_walks(num_walks, walk_length)
-  print('walk list size', len(walks))
-  for walk in walks:
-    words.extend([str(step) for step in walk])
-  #print(words)
-
-  N_L = Word2Vec.Learn(words)
-  matrix, mapping = N_L.train()
-
-  N_T = linking_test.Test(BFSlist, Edgelist, matrix, mapping)
-  test2 = N_T.run_test1(Removelist)
-  '''
-  output.write('-------------------test2-------------------\n')
-  for line in test2:
-    output.write(str(line) + ' ' + str(test2[line]) + '\n')
-output.close()
 print("Total time comsumed %fs" %(time.time()-start))
