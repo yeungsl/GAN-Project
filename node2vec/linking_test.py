@@ -34,7 +34,7 @@ class Test():
     def check(self, src, dst):
     	mapping = self.MP
     	matrix = self.M
-    	r = np.linalg.norm(matrix[mapping[str(src)]] - matrix[mapping[str(dst)]])
+    	r = np.linalg.norm(matrix[mapping[src]] - matrix[mapping[dst]])
     	return r
     		
     def run_test(self, Removelist, matrix, mapping, Original_list):

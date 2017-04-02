@@ -21,8 +21,8 @@ def read_data(filename):
   Edgelist = []
   for line in open(filename):
     s, d = line.split(" ")
-    src = int(s)
-    dst = int(d)
+    src = s
+    dst = d
     Edgelist.append((src, dst))
     if src not in BFSlist.keys():
       BFSlist[src] = {dst: 1}
