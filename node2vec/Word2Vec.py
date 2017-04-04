@@ -82,7 +82,7 @@ class Learn:
     del words
     #print('Most common words', count[:5])
     #print('Sample data', data[:10], [reverse_dictionary[i] for i in data[:10]])
-    #print(len(reverse_dictionary))
+    print(len(reverse_dictionary))
 
     batch, labels = self.generate_batch(data, batch_size=8, num_skips=2, skip_window=1)
     #for i in range(8):
