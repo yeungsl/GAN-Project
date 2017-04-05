@@ -6,6 +6,34 @@ import Word2Vec
 import Node2Vec
 import random, collections, itertools
 
+def read_data(filename):
+  """Extract the file and convert it into a neighbor list"""
+  BFSlist = {}
+  Edgelist = []
+  for line in open(filename):
+    s, d = line.split(" ")
+    src = s
+    dst = d
+    Edgelist.append((src, dst))
+    BFSlist = BFS(src, dst, BFSlist)
+
+  return BFSlist, Edgelist
+
+def BFS(src, dst, BFSlist):
+    if src not in BFSlist.keys():
+      BFSlist[src] = {dst: 1}
+      if dst not in BFSlist.keys():
+        BFSlist[dst] = {src: 1}
+      else:
+        BFSlist[dst].update({src: 1})
+    else:
+      BFSlist[src].update({dst: 1})
+      if dst not in BFSlist.keys():
+        BFSlist[dst] = {src: 1}
+      else:
+        BFSlist[dst].update({src: 1})
+    return BFSlist
+
 class Test():
     def __init__(self, BFSlist, Edgelist, p):
         self.E = Edgelist
@@ -17,19 +45,21 @@ class Test():
     	BFSlist = self.B
     	p = self.p
     	Removelist = []
+        New_Edgelist = []
+        New_BFSlist = {}
 
-
-    	for edge in Edgelist:
-    		r = random.random()
-    		if r < p:
-    			if len(BFSlist[edge[0]]) == 1 or len(BFSlist[edge[1]]) == 1:
-    				continue
-    			Removelist.append(edge)
-    			del BFSlist[edge[0]][edge[1]]
-    			del BFSlist[edge[1]][edge[0]]
-    			Edgelist.remove(edge)
-
-    	return Removelist, BFSlist, Edgelist
+        for edge in Edgelist:
+            r = random.random()
+            if r < p:
+                if len(BFSlist[edge[0]]) == 1 or len(BFSlist[edge[1]]) == 1:
+                    New_Edgelist.append(edge)
+                    New_BFSlist = BFS(edge[0], edge[1], New_BFSlist)
+                    continue
+                Removelist.append(edge)
+            else:
+                New_Edgelist.append(edge)
+                New_BFSlist = BFS(edge[0], edge[1], New_BFSlist)
+    	return Removelist, New_BFSlist, New_Edgelist
     	
     def check(self, src, dst):
     	mapping = self.MP

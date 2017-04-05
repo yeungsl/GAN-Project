@@ -14,34 +14,12 @@ import collections, math, os, random, httplib, sys, time
 # for comparasion
 
 
-# Read the data into a list of strings.
-def read_data(filename):
-  """Extract the file and convert it into a neighbor list"""
-  BFSlist = {}
-  Edgelist = []
-  for line in open(filename):
-    s, d = line.split(" ")
-    src = s
-    dst = d
-    Edgelist.append((src, dst))
-    if src not in BFSlist.keys():
-      BFSlist[src] = {dst: 1}
-      if dst not in BFSlist.keys():
-        BFSlist[dst] = {src: 1}
-      else:
-        BFSlist[dst].update({src: 1})
-    else:
-      BFSlist[src].update({dst: 1})
-      if dst not in BFSlist.keys():
-        BFSlist[dst] = {src: 1}
-      else:
-        BFSlist[dst].update({src: 1})
-  return BFSlist, Edgelist
+
 
 ################# main code ###########################################
 start = time.time()
 filename = sys.argv[1]
-BFSlist, Edgelist = read_data(filename)
+BFSlist, Edgelist = linking_test.read_data(filename)
 
 print('edge list size', len(Edgelist))
 T = linking_test.Test(BFSlist, Edgelist, float(sys.argv[2]))
