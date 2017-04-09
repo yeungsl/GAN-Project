@@ -22,12 +22,11 @@ class Prediction():
 
 	def create_adjmatrix(self, nodepair_set,vertex_set):
 	  	init_matrix = np.zeros([len(vertex_set),len(vertex_set)])
-
-	   	for pair in nodepair_set:
+	  	for pair in nodepair_set:
 	   		if pair[0] in vertex_set and pair[1] in vertex_set:
 	   			init_matrix[  vertex_set[pair[0]] ] [ vertex_set[pair[1]] ] = 1 
-	   			init_matrix[  vertex_set[pair[1]] ] [ vertex_set[pair[0]] ] = 1 
-		return init_matrix
+	   			init_matrix[  vertex_set[pair[1]] ] [ vertex_set[pair[0]] ] = 1
+	   	return init_matrix
 		
 	def auc_score(self, matrix_score,matrix_test,matrix_train,n_compare=10):
 

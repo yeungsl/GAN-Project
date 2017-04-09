@@ -13,7 +13,7 @@ def read_data(filename):
   for line in open(filename):
     s, d = line.split(" ")
     src = s
-    dst = d
+    dst = d[0]
     Edgelist.append((src, dst))
     BFSlist = BFS(src, dst, BFSlist)
 
@@ -64,6 +64,8 @@ class Test():
     def check(self, src, dst):
     	mapping = self.MP
     	matrix = self.M
+        print("src", src)
+        print("dst", dst)
     	r = np.linalg.norm(matrix[mapping[src]] - matrix[mapping[dst]])
     	return r
     		
@@ -75,9 +77,10 @@ class Test():
     	result = {}
     	s = 0
     	node_list = set([node for edge in Removelist for node in edge])
-    	#print (len(node_list))
+    	print (node_list)
     	#print (Removelist)
     	#print (mapping)
+        #print (matrix)
     	
     	for edge in itertools.combinations(node_list, 2):
     		dist = self.check(edge[0], edge[1])

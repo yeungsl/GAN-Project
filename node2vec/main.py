@@ -21,6 +21,7 @@ start = time.time()
 filename = sys.argv[1]
 BFSlist, Edgelist = linking_test.read_data(filename)
 
+
 print('edge list size', len(Edgelist))
 T = linking_test.Test(BFSlist, Edgelist, float(sys.argv[2]))
 Removelist, New_BFSlist, New_Edgelist = T.sample()
