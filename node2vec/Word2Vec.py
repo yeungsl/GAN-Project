@@ -6,7 +6,7 @@
 import tensorflow as tf
 import numpy as np
 from six.moves import urllib
-import collections, math, os, random, zipfile, httplib
+import collections, math, os, random, zipfile
 
 
 class Learn:
@@ -82,7 +82,7 @@ class Learn:
     del words
     #print('Most common words', count[:5])
     #print('Sample data', data[:10], [reverse_dictionary[i] for i in data[:10]])
-    print(len(reverse_dictionary))
+    print('Length of the dictionary:', len(reverse_dictionary))
 
     batch, labels = self.generate_batch(data, batch_size=8, num_skips=2, skip_window=1)
     #for i in range(8):
@@ -101,10 +101,10 @@ class Learn:
     # We pick a random validation set to sample nearest neighbors. Here we limit the
     # validation samples to the words that have a low numeric ID, which by
     # construction are also the most frequent.
-    valid_size = 16     # Random set of words to evaluate similarity on.
-    valid_window = 100  # Only pick dev samples in the head of the distribution.
+    valid_size = 6     # Random set of words to evaluate similarity on.
+    valid_window = 10  # Only pick dev samples in the head of the distribution.
     valid_examples = np.random.choice(valid_window, valid_size, replace=False)
-    num_sampled = 64    # Number of negative examples to sample.
+    num_sampled = 6    # Number of negative examples to sample.
 
     graph = tf.Graph()
 
@@ -192,7 +192,7 @@ class Learn:
               log_str = "%s %s," % (log_str, close_word)
             #print(log_str)
       final_embeddings = normalized_embeddings.eval()
-      #print ("shape of the final embedding", final_embeddings.shape)
+      print ("shape of the final embedding", final_embeddings.shape)
       return list(final_embeddings), dictionary
 
 

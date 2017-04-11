@@ -20,7 +20,7 @@ import collections, math, os, random, httplib, sys, time
 start = time.time()
 filename = sys.argv[1]
 BFSlist, Edgelist = linking_test.read_data(filename)
-
+print(BFSlist)
 
 print('edge list size', len(Edgelist))
 T = linking_test.Test(BFSlist, Edgelist, float(sys.argv[2]))
@@ -44,7 +44,7 @@ for walk in walks:
 
 L = Word2Vec.Learn(words)
 matrix, mapping = L.train()
-
+print(mapping)
 percentage, AUC = T.run_test(Removelist, matrix, mapping, BFSlist)
 print("the percetion of prediction is %f "%percentage)
 print("the AUC of prediction is %f"%AUC)

@@ -45,7 +45,8 @@ class Graph():
     '''
     G = self.G
     walks = []
-    nodes = G.keys()
+    nodes = list(G.keys())
+
     #print ('Walk iteration:')
     for walk_iter in range(num_walks):
       #print str(walk_iter+1), '/', str(num_walks)
