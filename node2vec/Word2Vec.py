@@ -78,7 +78,7 @@ class Learn:
 
   def train(self):
     words = self.W
-    data, count, dictionary, reverse_dictionary = self.build_dataset(words, 6)
+    data, count, dictionary, reverse_dictionary = self.build_dataset(words, 0)
     del words
     #print('Most common words', count[:5])
     #print('Sample data', data[:10], [reverse_dictionary[i] for i in data[:10]])

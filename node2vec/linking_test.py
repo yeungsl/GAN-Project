@@ -4,9 +4,8 @@
 import numpy as np
 import Word2Vec
 import Node2Vec
-import random
-import collections
-import itertools
+import random, collections, itertools, copy
+
 
 
 def read_data(filename):
@@ -15,8 +14,8 @@ def read_data(filename):
     BFSlist = {}
     Edgelist = []
     for line in open(filename):
-        #(s, d) = line.split(' ')
-        (s,d) = line.split('\t')
+        (s, d) = line.split(' ')
+        #(s,d) = line.split('\t')
         src = s
         dst = d.split('\n')[0]
         Edgelist.append((src, dst))
@@ -59,20 +58,20 @@ class Test:
         p = self.p
         Removelist = []
         New_Edgelist = []
-        New_BFSlist = {}
+        New_BFSlist = copy.deepcopy(BFSlist)
 
         for edge in Edgelist:
             r = random.random()
             if r < p:
-                if len(BFSlist[edge[0]]) == 1 or len(BFSlist[edge[1]])\
-                     == 1:
+                if len(New_BFSlist[edge[0]]) == 1 or len(New_BFSlist[edge[1]])  == 1:
                     New_Edgelist.append(edge)
-                    New_BFSlist = BFS(edge[0], edge[1], New_BFSlist)
                     continue
                 Removelist.append(edge)
+                del New_BFSlist[edge[0]][edge[1]]
+                del New_BFSlist[edge[1]][edge[0]]
             else:
                 New_Edgelist.append(edge)
-                New_BFSlist = BFS(edge[0], edge[1], New_BFSlist)
+
         return (Removelist, New_BFSlist, New_Edgelist)
 
     def check(self, src, dst):
@@ -96,7 +95,7 @@ class Test:
         result = {}
         s = 0
         node_list = set([node for edge in Removelist for node in edge])
-
+        #print(node_list)
         for edge in itertools.combinations(node_list, 2):
             dist = self.check(edge[0], edge[1])
             s += dist

@@ -74,6 +74,8 @@ class MultT:
                                         samplefile.write(str(edge[0]) + '\t' + str(edge[1]) + '\n')
                                         continue
                                 Removelist.append(edge)
+                                del M_BFSlist[edge[0]][edge[1]]
+                                del M_BFSlist[edge[1]][edge[0]]
                         else:
                                 samplefile.write(str(edge[0]) + '\t' + str(edge[1]) + '\n')
 

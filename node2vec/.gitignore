@@ -1,0 +1,4 @@
+*_result.txt
+*.pyc
+!/tmp/*
+!/a/tmp/*
