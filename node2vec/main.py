@@ -4,13 +4,26 @@
 # http://www.cnblogs.com/edwardbi/p/5509699.html
 
 import numpy as np
-import Node2Vec, Word2Vec, linking_test, link_pred, multilayer_test
+import networkx as nx
+import pickle
+import Node2Vec, Word2Vec, linking_test, link_pred, multilayer_test, Node2Vec_MKII, MK_test
 import collections, math, os, random, sys, time, argparse
 
 # Read in the same data as used in tensoflow template
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/tutorials/word2vec/word2vec_basic.py
 # for comparasion
 
+
+################ helper function ###################################
+def reader(path):
+  files = os.listdir(path)
+  nx_graphs = []
+  for name in files:
+    if name.endswith(".pickle"):
+      print(path+name)
+      g = pickle.load(open(path + name, "rb"))
+      nx_graphs.append(max(nx.connected_component_subgraphs(g), key=len))
+  return nx_graphs
 
 ################ global parameter ###################################
 working_dir = os.getcwd()
@@ -21,6 +34,8 @@ test_C = False
 test_E = False
 test_MN = False
 test_ME = False
+test_MNMK = False
+test_MNOF = False
 test_all = False
 p = 0.5
 q = 0.5
@@ -52,6 +67,12 @@ elif args.test == 'MN' and args.directory != None:
   path = args.directory
 elif args.test == 'ME' and args.directory != None:
   test_ME = True
+  path = args.directory
+elif args.test == 'MNMK' and args.directory != None:
+  test_MNMK = True
+  path = args.directory
+elif args.test == 'MNOF' and args.directory != None:
+  test_MNOF = True
   path = args.directory
 elif args.test == 'all' and args.directory != None:
   test_all =True
@@ -172,7 +193,7 @@ if test_all or test_MN:
 
   M_words = []
   for walk in M_walks:
-	M_words.extend([str(step) for step in walk])
+    M_words.extend([str(step) for step in walk])
 
   M_L = Word2Vec.Learn(M_words)
   M_matrix, M_mapping = M_L.train()
@@ -195,7 +216,8 @@ if test_all or test_MN:
     walks = G.simulate_walks(num_walks, walk_length)
     words = []
     for walk in walks:
-	  words.extend([str(step) for step in walk])
+      words.extend([str(step) for step in walk])
+
     L = Word2Vec.Learn(words)
     matrix, mapping = L.train()
     T_matrix[g] = matrix
@@ -203,7 +225,7 @@ if test_all or test_MN:
 
   #print(T_matrix)
   T_percetion, T_AUC = mt.run_test(Removelist, T_matrix, T_mapping, BFSlist, percent)
-  results.write('Seperated_AUC' + '\t' + str(T_AUC) + '\n' + 'Seperated_P' + '\t' + str(T_percentage))
+  results.write('Seperated_AUC' + '\t' + str(T_AUC) + '\n' + 'Seperated_P' + '\t' + str(T_percetion))
   print("the percetion of prediction is %f "%T_percetion)
   print("the AUC of prediction is %f"%T_AUC)
   print('done running Multilayer Node2Vec')
@@ -283,4 +305,73 @@ if test_all or test_ME:
   results.write('separated_AUC' + '\t' + str(T_AUC) + '\n' + 'separated_P' + '\t' + str(T_percetion))
   print("the percetion of prediction is %f "%T_percetion)
   print("the AUC of prediction is %f"%T_AUC)
+  print("network embedding multilayer test done!!!!")
 
+if test_all or test_MNMK:
+  files = os.listdir(path)
+  nx_graphs = []
+  for name in files:
+    if name.endswith(".pickle"):
+      print(path+name)
+      g = pickle.load(open(path + name, "rb"))
+      nx_graphs.append(max(nx.connected_component_subgraphs(g), key=len))
+
+  MK_T = MK_test.Test(path, percent)
+  MK_T.readG()
+  graphs = MK_T.sample()
+
+  MK_G = Node2Vec_MKII.Graph(graphs, p, q)
+  MK_G.preprocess_transition_probs()
+  MK_walks = MK_G.simulate_walks(num_walks, walk_length)
+
+  MK_words = []
+  for walk in MK_walks:
+    MK_words.extend([str(step) for step in walk])
+
+
+  M_L = Word2Vec.Learn(MK_words)
+  M_matrix, M_mapping = M_L.train()
+
+  percetion, AUC = MK_T.run_test(M_matrix, M_mapping, nx_graphs)
+  print("the percetion of prediction is %f "%percetion)
+  print("the AUC of prediction is %f"%AUC)
+  print("node2vec MKII link prediction sampling test done!!!!")
+
+if test_all or test_MNOF:
+  online_dir = path+"online/"
+  online_graphs = reader(online_dir)
+  offline_dir = path+"offline/"
+  offline_graphs = reader(offline_dir)
+
+  off_G = Node2Vec_MKII.Graph(offline_graphs, p, q)
+  off_G.preprocess_transition_probs()
+  off_walks = off_G.simulate_walks(num_walks, walk_length)
+
+  off_words = []
+  for walk in off_walks:
+    off_words.extend([str(step) for step in walk])
+
+
+  off_L = Word2Vec.Learn(off_words)
+  off_matrix, off_mapping = off_L.train()
+
+  on_G = Node2Vec_MKII.Graph(online_graphs, p, q)
+  on_G.preprocess_transition_probs()
+  on_walks = on_G.simulate_walks(num_walks, walk_length)
+
+  on_words = []
+  for walk in on_walks:
+    on_words.extend([str(step) for step in walk])
+
+
+  on_L = Word2Vec.Learn(on_words)
+  on_matrix, on_mapping = on_L.train()
+
+  MK_T = MK_test.Test(path, percent)
+  off_percetion, off_AUC = MK_T.run_matching_test(off_matrix, off_mapping, online_graphs)
+  on_percetion, on_AUC = MK_T.run_matching_test(on_matrix, on_mapping, offline_graphs)
+  print("Using offline group to match online group....")
+  print("percetion: %f, AUC: %f"%(off_percetion, off_AUC))
+  print("Using online group to match offline group.....")
+  print("percetion: %f, AUC: %f"%(on_percetion, on_AUC))
+  print("node2vec MKII link prediction on-off line test done!!!!")

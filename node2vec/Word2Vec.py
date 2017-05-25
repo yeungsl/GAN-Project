@@ -162,7 +162,7 @@ class Learn:
       #print("Initialized")
 
       average_loss = 0
-      for step in xrange(num_steps):
+      for step in range(num_steps):
         batch_inputs, batch_labels = self.generate_batch(data,
             batch_size, num_skips, skip_window)
         feed_dict = {train_inputs: batch_inputs, train_labels: batch_labels}
@@ -182,12 +182,12 @@ class Learn:
         # Note that this is expensive (~20% slowdown if computed every 500 steps)
         if step % 10000 == 0:
           sim = similarity.eval()
-          for i in xrange(valid_size):
+          for i in range(valid_size):
             valid_word = reverse_dictionary[valid_examples[i]]
             top_k = 8  # number of nearest neighbors
             nearest = (-sim[i, :]).argsort()[1:top_k + 1]
             log_str = "Nearest to %s:" % valid_word
-            for k in xrange(top_k):
+            for k in range(top_k):
               close_word = reverse_dictionary[nearest[k]]
               log_str = "%s %s," % (log_str, close_word)
             #print(log_str)
