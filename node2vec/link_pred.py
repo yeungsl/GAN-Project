@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-import random
+import random, collections
 import pandas as pd
 import numpy.matlib
 
@@ -80,6 +80,49 @@ class Prediction:
         auc = auc / frequency
 
         return auc
+
+    def acc(self, matrix_score, matrix_ori, perm_list, ep):
+        result = {}
+        s = 0
+        l = 1
+        for i in range(0, len(perm_list)):
+            for j in range(l, len(perm_list)):
+                if matrix_score[i, j] != 0:
+                    dist = matrix_score[i, j]
+                    s += dist
+                    result[(i, j)] = dist
+            l += 1
+
+        normalized_result = {}
+        for e in result:
+            normalized_result[e] = result[e] / s
+
+        sorted_result = collections.OrderedDict(sorted(normalized_result.items(), key=lambda t: t[1]))
+
+        n = len(normalized_result) * ep
+        TP = 0
+        count = 1
+        print ('getting the first ', n)
+
+        for edge in sorted_result:
+            #print (edge)
+            if matrix_ori[edge[0]][edge[1]] > 0:
+                TP += 1
+
+            count += 1
+            if count > n:
+                break
+        print ('TP', TP)
+        FN = count - TP
+        FP = 0
+        TN = 0
+        print('FN', FN)
+
+        precision = TP/(TP + FP)
+        recall = TP/(TP + FN)
+        F = 2*TP/(2*TP + FP + FN)
+
+        return precision, recall, F
 
 
 class similarity(object):

@@ -6,10 +6,11 @@ import pickle, sys, os
 def read_data(filename, path):
     """Extract the file and convert it into a neighbor list"""
 
-    g = nx.Graph()
+    g = nx.Graph(name=filename)
     for line in open(path + filename):
-        #(s, d) = line.split(' ')
-        (s,d) = line.split('\t')
+        #(s, d, _) = line.split(' ')
+        (s, d) = line.split(' ')
+        #(s,d) = line.split('\t')
         src = s
         dst = d.split('\n')[0]
         g.add_edge(src, dst)

@@ -8,10 +8,11 @@ import random
 
 
 class Graph():
-  def __init__(self, nx_graphs, p, q):
+  def __init__(self, nx_graphs, p, q, r):
     self.G = nx_graphs
     self.p = p
     self.q = q
+    self.r = r
     self.jump = 1.0/len(nx_graphs)
 
   def node2vec_walk(self, walk_length, start_node, G):
@@ -99,7 +100,7 @@ class Graph():
 
     return alias_setup(normalized_probs)
 
-  def preprocess_transition_probs(self):
+  def preprocess_transition_probs(self, weight_list, flag):
     '''
     Preprocessing of transition probabilities for guiding the random walks.
     '''
@@ -120,16 +121,24 @@ class Graph():
         jump_list = []
         for graph in Gs:
           if node in graph.nodes():
-            jump_list.append(jump)
+            if graph == G:
+              if flag == 0 or flag == 3:
+                jump_list.append(self.r)
+              else:
+                jump_list.append(jump)
+            else:
+              if flag == 0 or flag == 1:
+                jump_list.append(jump)
+              elif flag == 3:
+                jump_list.append((1/(len(Gs)-1)) * self.r)
+              else:
+                if (graph.graph['name'], G.graph['name']) in weight_list.keys():
+                  jump_list.append(jump * weight_list[(graph.graph['name'], G.graph['name'])])
+                else:
+                  jump_list.append(jump * weight_list[(G.graph['name'], graph.graph['name'])])
           else:
             jump_list.append(0)
-        '''
-        if jump_list == []:
-          print("found one node that has no replica in other layer!!!")
-          alias_jump[node] = -1
 
-        else:
-        '''
         n_con = sum(jump_list)
         n_probs = [float(u_prob)/n_con for u_prob in jump_list]
         alias_jump[node] = alias_setup(n_probs)
@@ -148,6 +157,7 @@ class Graph():
     self.alias_edges_list = alias_edges_list
     self.alias_jump_list = alias_jump_list
 
+    #print(alias_jump_list)
     return
 
 

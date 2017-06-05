@@ -2,3 +2,4 @@
 *.pyc
 !/tmp/*
 !/a/tmp/*
+test_data/

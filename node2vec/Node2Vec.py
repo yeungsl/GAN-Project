@@ -8,9 +8,8 @@ import random
 
 
 class Graph():
-  def __init__(self, BFSlist, Edgelist, p, q):
-    self.G = BFSlist
-    self.E = Edgelist
+  def __init__(self, nx_graphs, p, q):
+    self.G = nx_graphs
     self.p = p
     self.q = q
 
@@ -26,7 +25,7 @@ class Graph():
 
     while len(walk) < walk_length:
       cur = walk[-1]
-      cur_nbrs = G[cur].keys()
+      cur_nbrs = G.neighbors(cur)
       if len(cur_nbrs) > 0:
         if len(walk) == 1:
           walk.append(cur_nbrs[alias_draw(alias_nodes[cur][0], alias_nodes[cur][1])])
@@ -45,7 +44,7 @@ class Graph():
     '''
     G = self.G
     walks = []
-    nodes = list(G.keys())
+    nodes = list(G.nodes())
 
     #print ('Walk iteration:')
     for walk_iter in range(num_walks):
@@ -66,13 +65,13 @@ class Graph():
     q = self.q
 
     unnormalized_probs = []
-    for dst_nbr in G[dst].keys():
+    for dst_nbr in sorted(G.neighbors(dst)):
       if dst_nbr == src:
-        unnormalized_probs.append(G[dst][dst_nbr]/p)
-      elif src in G[dst_nbr].keys():
-        unnormalized_probs.append(G[dst][dst_nbr])
+        unnormalized_probs.append(p)
+      elif G.has_edge(dst_nbr, src):
+        unnormalized_probs.append(1)
       else:
-        unnormalized_probs.append(G[dst][dst_nbr]/q)
+        unnormalized_probs.append(q)
     norm_const = sum(unnormalized_probs)
     normalized_probs =  [float(u_prob)/norm_const for u_prob in unnormalized_probs]
 
@@ -83,18 +82,17 @@ class Graph():
     Preprocessing of transition probabilities for guiding the random walks.
     '''
     G = self.G
-    E = self.E
 
     alias_nodes = {}
-    for node in G.keys():
-      unnormalized_probs = [G[node][nbr] for nbr in G[node].keys()]
+    for node in G.nodes():
+      unnormalized_probs = [1 for nbr in sorted(G.neighbors(node))]
       norm_const = sum(unnormalized_probs)
       normalized_probs =  [float(u_prob)/norm_const for u_prob in unnormalized_probs]
       alias_nodes[node] = alias_setup(normalized_probs)
 
     alias_edges = {}
 
-    for edge in E:
+    for edge in G.edges():
       alias_edges[edge] = self.get_alias_edge(edge[0], edge[1])
       alias_edges[(edge[1], edge[0])] = self.get_alias_edge(edge[1], edge[0])
 
