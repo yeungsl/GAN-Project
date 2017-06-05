@@ -1,22 +1,17 @@
 # Node2Vec
-This directory is an implementation of node2vec algorithm with tensorflow by defualt the main script will run random walk and do a learn then test with linking classification.
+This directory is an implementation of multilayer Node2Vec algorithm and a normal version of Node2Vec. Moreover, it contains link prediction tests we used to verify the result
 ## Build
-Need tensorflow library in python 3
+Need tensorflow, sklearn, networkx library in python 3
 ## Running the modele
-Run the test with the main.py with a edge list, an output file, and a flag to decide whether to run the second test.
+Run the test with the tester.py with a edge list, an output file, and a flag to decide whether to run the second test. Of course there are many variables you can input e.g. number of walks, walk length, probability p for biased sampling etc.
 ```
-python main.py <-g Graph> <-d directory> <test>
+python3 tester.py <--graph Graph file> <--directory directory> <--test>
 ```
 ### Input
-The input of the python script should be a list of edge 2004-04.txt and a test type or a directory and a multilayer test
-#### running the normal test with one graph
+The input of the python script should be a pickle file in which should be a networkx graph object.
+#### running the multilayer link predictino tests on the input directory where should contain multiple layers of graphs
 ```
-python main.py -g 2004-04.txt N
-```
-#### running the multilayer test with a directory of graph __must have the merged graph include into the directory__
-```
-python main.py -d /a MN
+python3 tester.py --directory data_set/ --NM
 ```
 ### Output
-The output of the python script should be an dictionary that contains the test result:
-The AUC and the percetion of the tests.
+The output will be the AUC and the Accuracy and f-measure of the data-set trained by the algorithm.
